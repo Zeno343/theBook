@@ -3,15 +3,16 @@ const std = @import("std");
 const Device = @import("device/mod.zig");
 pub const Event = Device.Event;
 pub const Window = Device.Window;
-
 pub const Render = @import("render/mod.zig");
 
 const VERT_SRC = @embedFile("shaders/rgb.vert");
 const FRAG_SRC = @embedFile("shaders/rgb.frag");
 
+const VertexType = struct { [2]f32, [3]f32 }; // XY and RGB
+
 pub const Engine = extern struct {
     window: Window,
-    verts: Render.Buffer(f32),
+    verts: Render.Buffer(VertexType),
     shader: Render.Shader,
     mesh: Render.Mesh,
 
@@ -23,8 +24,13 @@ pub const Engine = extern struct {
 
         const shader = Render.Shader.compile(VERT_SRC, FRAG_SRC);
 
-        const verts = Render.Buffer(f32).from_verts(&.{ 0.5, -0.5, 1.0, 0.0, 0.0, -0.5, -0.5, 0.0, 1.0, 0.0, 0.0, 0.5, 0.0, 0.0, 1.0 });
+        const verts = Render.Buffer(VertexType).from_verts(&.{
+            .{ .{ 0.5, -0.5 }, .{ 1.0, 0.0, 0.0 } },
+            .{ .{ -0.5, -0.5 }, .{ 0.0, 1.0, 0.0 } },
+            .{ .{ 0.0, 0.5 }, .{ 0.0, 0.0, 1.0 } },
+        });
         verts.bind();
+
         const mesh = Render.Mesh.new().with_vertex_attrs(&.{
             Render.VertexAttr{ .n_components = 2, .type = Render.VertexType.Float },
             Render.VertexAttr{ .n_components = 3, .type = Render.VertexType.Float },
