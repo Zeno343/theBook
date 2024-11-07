@@ -44,11 +44,11 @@ pub fn build(b: *std.Build) void {
     web.addFileArg(main_wasm);
     web.addArtifactArg(ctcf_web);
     web.addArg("-o");
-    web.addArg("index.html");
+    web.addArg("index.js");
 
     web.step.dependOn(&wasm_lib.step);
 
-    const install_html = b.addInstallFile(b.path("index.html"), "web/index.html");
+    const install_html = b.addInstallFile(b.path("src/web/index.html"), "web/index.html");
     install_html.step.dependOn(&web.step);
     const install_js = b.addInstallFile(b.path("index.js"), "web/index.js");
     install_js.step.dependOn(&web.step);

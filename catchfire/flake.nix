@@ -9,7 +9,7 @@
     { nixpkgs, ... }:
     with nixpkgs.legacyPackages."x86_64-linux";
     let
-      native = stdenv.mkDerivation {
+      catchfire = stdenv.mkDerivation {
         name = "catchfire";
         version = "v24.11.06";
         src = lib.cleanSource ./.;
@@ -68,14 +68,14 @@
     in
     {
       packages."x86_64-linux" = {
-        default = native;
+        default = catchfire;
         inherit catchfireWeb;
         inherit webServer;
       };
 
       devShells."x86_64-linux".default = mkShell {
         inputsFrom = [
-          native
+          catchfire
           catchfireWeb
         ];
       };
