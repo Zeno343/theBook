@@ -7,7 +7,7 @@ pub fn build(b: *std.Build) void {
     const c_main = b.addSystemCommand(&.{ "emcc", "--cache", cache });
     c_main.addArg("--use-port=sdl2");
     c_main.addArg("-c");
-    c_main.addFileArg(b.path("src/static/main.c"));
+    c_main.addFileArg(b.path("src/web/main.c"));
     c_main.addArg("-o");
     const main_wasm = c_main.addOutputFileArg("main.wasm");
 
@@ -37,6 +37,7 @@ pub fn build(b: *std.Build) void {
     }) });
     const wasm_lib = b.addInstallArtifact(ctcf_web, .{});
 
+    const web_build = b.addWriteFiles();
     const web = b.addSystemCommand(&.{ "emcc", "--cache", cache });
     web.addArg("--use-port=sdl2");
     web.addArg("-sFULL_ES3");
@@ -45,14 +46,24 @@ pub fn build(b: *std.Build) void {
     web.addArtifactArg(ctcf_web);
     web.addArg("-o");
     web.addArg("index.js");
+    web.setCwd(web_build.getDirectory());
 
     web.step.dependOn(&wasm_lib.step);
 
-    const install_html = b.addInstallFile(b.path("src/web/index.html"), "web/index.html");
+    const install_html = b.addInstallFile(
+        b.path("src/web/index.html"),
+        "web/index.html",
+    );
     install_html.step.dependOn(&web.step);
-    const install_js = b.addInstallFile(b.path("index.js"), "web/index.js");
+    const install_js = b.addInstallFile(
+        web_build.getDirectory().path(b, "index.js"),
+        "web/index.js",
+    );
     install_js.step.dependOn(&web.step);
-    const install_wasm = b.addInstallFile(b.path("index.wasm"), "web/index.wasm");
+    const install_wasm = b.addInstallFile(
+        web_build.getDirectory().path(b, "index.wasm"),
+        "web/index.wasm",
+    );
     install_wasm.step.dependOn(&web.step);
 
     const build_web = b.step("web", "build wasm");
