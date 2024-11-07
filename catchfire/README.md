@@ -1,5 +1,6 @@
-# catchfire v0.1
+# Catchfire
+Zig GFX with OpenGL and SDL2
 
-## features
-- render an RGB triangle splash screen
-- builds to native x86 and wasm
+## Artifacts
+- catchfire (x86 bin) v24.11.06
+- catchfireWeb (static html) v24.11.06

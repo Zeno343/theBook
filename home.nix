@@ -44,6 +44,7 @@
           type = "lua";
           config = ''require("lspconfig").nixd.setup{}'';
         }
+        { plugin = vimwiki; }
       ];
     };
   };

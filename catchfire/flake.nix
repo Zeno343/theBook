@@ -11,7 +11,7 @@
     let
       native = stdenv.mkDerivation {
         name = "catchfire";
-        version = "v0.1";
+        version = "v24.11.06";
         src = lib.cleanSource ./.;
 
         buildInputs = [ SDL2 ];
@@ -28,9 +28,9 @@
       };
 
       # emscripten wasm build
-      webContent = stdenv.mkDerivation rec {
-        name = "webContent";
-        version = "v0.1";
+      catchfireWeb = stdenv.mkDerivation rec {
+        name = "catchfireWeb";
+        version = "v24.11.06";
         src = lib.cleanSource ./.;
 
         nativeBuildInputs = [
@@ -58,25 +58,25 @@
       webServer = writeShellApplication {
         name = "webServer";
         runtimeInputs = [
-          webContent
+          catchfireWeb
           emscripten
         ];
         text = ''
-          emrun ${webContent}/web/index.html
+          emrun ${catchfireWeb}/web/index.html
         '';
       };
     in
     {
       packages."x86_64-linux" = {
         default = native;
-        inherit webContent;
+        inherit catchfireWeb;
         inherit webServer;
       };
 
       devShells."x86_64-linux".default = mkShell {
         inputsFrom = [
           native
-          webContent
+          catchfireWeb
         ];
       };
     };
