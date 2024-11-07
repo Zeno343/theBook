@@ -19,8 +19,10 @@
             inherit pkgs;
             modules = [
               ./configuration.nix
-              ./home.nix
               home-manager.nixosModules.home-manager
+              {
+                home-manager.users.zeno = import ./home.nix;
+              }
             ];
           };
       };

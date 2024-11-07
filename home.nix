@@ -1,6 +1,10 @@
 { pkgs, ... }:
 {
   home = {
+    packages = with pkgs; [
+      brave
+      nixfmt-rfc-style
+    ];
     stateVersion = "24.05";
     username = "zeno";
     homeDirectory = "/home/zeno";
@@ -14,8 +18,8 @@
   };
 
   programs = {
+    home-manager.enable = true;
     kitty.enable = true;
-    brave.enable = true;
     git = {
       enable = true;
       extraConfig.core.editor = "nvim";
